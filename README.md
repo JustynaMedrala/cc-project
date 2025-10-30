@@ -1,21 +1,25 @@
+
 # Calorimeter Geometry and Sampling Toolkit
 
-description: >
   Toolkit for modeling, binning, and evaluating calorimeter energy deposits in
   simulated detector geometries. Supports cylindrical, conical, and spherical
   binning, coordinate transformations, ECAL histogramming, and event-wise
   comparison with real data.
 
-pipeline:
-  name: Calorimeter Simulation & Optimization
-  description: >
+
+# Pipeline: Calorimeter Simulation & Optimization
+  Calorimeter Simulation & Optimization
+   >
     End-to-end pipeline for simulating calorimeter energy deposits, grouping
     calorimeter cell data, optimizing sampling configurations via Bayesian search,
     and detecting plateau regions in performance metrics.
-  stages:
-    - name: Simulation
+  
+    # -------------------------------
+    # Stage 1: Simulation
+    # -------------------------------
+    - stage: Simulation
       script: simulate_pyroot.py
-      description: >
+       >
         Generates ROOT-format shower data (SimulatedShowers tree) from MC simulations.
       input: null
       output: simulated_showers.root
@@ -25,9 +29,12 @@ pipeline:
         events: 50000
         output: simulated_showers.root
 
-    - name: Grouping
+    # -------------------------------
+    # Stage 2: Grouping
+    # -------------------------------
+    - stage: Grouping
       script: group_calo.py
-      description: >
+       >
         Converts simulation data to binned calorimeter hits.
         Applies cylindrical or conical energy binning and stores hits in ROOT format.
       input: simulated_showers.root
@@ -39,9 +46,12 @@ pipeline:
         max_events: 10000
         n_points: 100000
 
-    - name: Optimization
+    # -------------------------------
+    # Stage 3: Optimization
+    # -------------------------------
+    - stage: Optimization
       script: bayesian.py
-      description: >
+       >
         Performs Bayesian optimization of geometry parameters using
         Wasserstein distance as a metric.
       input: calorimeter_coordinates_*.root
@@ -52,9 +62,12 @@ pipeline:
         iterations: 100
         max_events: 500
 
-    - name: Plateau Detection
+    # -------------------------------
+    # Stage 4: Plateau Detection
+    # -------------------------------
+    - stage: Plateau Detection
       script: plateau.py
-      description: >
+       >
         Identifies stable parameter regions (plateaus) in the optimization results.
       input: bayesian_results.csv
       output: bayesian_results_plateau.csv
@@ -62,15 +75,16 @@ pipeline:
         python plateau.py --delta 0.02
       parameters:
         delta: 0.02
+# Workflow
 
-workflow:
-  steps:
-    - simulate_pyroot.py
-    - group_calo.py
-    - bayesian.py
-    - plateau.py
+ - simulate_pyroot.py
+ - group_calo.py
+ - bayesian.py
+ - plateau.py
 
-files:
+
+# Project Files
+
   - simulate_pyroot.py
   - group_calo.py
   - bayesian.py
@@ -79,20 +93,24 @@ files:
   - generate_data.py
   - compare_utils.py
 
-dependencies:
-  python_packages:
-    - numpy
-    - pandas
-    - uproot
-    - awkward
-    - scipy
-    - tqdm
-    - scikit-optimize
-    - matplotlib
+# Dependencies
+
+  - numpy
+  - pandas
+  - uproot
+  - awkward
+  - scipy
+  - tqdm
+  - scikit-optimize
+  - matplotlib
+  
   python_version: ">=3.9"
 
-notes:
+
+# Notes
+
   - All energy is scaled by energy_scale_factor = 7.85
   - Inner ECAL region excludes the beam area
   - Wasserstein distance is computed event-wise
   - Supports both full ECAL and inner-only analysis modes
+

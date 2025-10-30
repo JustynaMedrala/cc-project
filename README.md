@@ -1,7 +1,10 @@
 # Calorimeter Geometry and Sampling Toolkit
 
-Toolkit for modeling, binning, and evaluating calorimeter energy deposits in simulated detector geometries.  
-Supports cylindrical, conical, and spherical binning, coordinate transformations, ECAL histogramming, and event-wise comparison with real data.
+description: >
+  Toolkit for modeling, binning, and evaluating calorimeter energy deposits in
+  simulated detector geometries. Supports cylindrical, conical, and spherical
+  binning, coordinate transformations, ECAL histogramming, and event-wise
+  comparison with real data.
 
 pipeline:
   name: Calorimeter Simulation & Optimization
